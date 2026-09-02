@@ -2,39 +2,46 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 
-	"github.com/jackc/pgx/v5"
+	"weblog/internal/database"
+
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
-	// Load environment variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	// Load environment variables.
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("failed to load .env")
 	}
 
-	// Get database URL
+	// Get database URL.
 	databaseURL := os.Getenv("DATABASE_URL")
 	if databaseURL == "" {
 		log.Fatal("DATABASE_URL is not set")
 	}
 
-	// Connect to PostgreSQL
-	conn, err := pgx.Connect(context.Background(), databaseURL)
+	// Connect to PostgreSQL.
+	conn, err := database.Connect(databaseURL)
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		log.Fatal("failed to connect to database:", err)
 	}
 	defer conn.Close(context.Background())
 
-	// Test database connection
-	err = conn.Ping(context.Background())
-	if err != nil {
-		log.Fatal("Database ping failed:", err)
-	}
+	// Create Echo server.
+	e := echo.New()
 
-	fmt.Println("Database connected successfully!")
+	// Test route.
+	e.GET("/", func(c echo.Context) error {
+		return c.String(200, "Weblog is running!")
+	})
+
+	// Start server.
+	log.Println("Server started on http://localhost:8080")
+
+	if err := e.Start(":8080"); err != nil {
+		log.Fatal(err)
+	}
 }
