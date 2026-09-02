@@ -3,8 +3,8 @@ package models
 import "time"
 
 type User struct {
-	ID int64
-	Username string
+	ID           int64
+	Username     string
 	PasswordHash string
-	CreatedAt time.Time
+	CreatedAt    time.Time
 }
