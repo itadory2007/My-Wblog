@@ -20,10 +20,10 @@ func NewPostRepository(db *pgx.Conn) *PostRepository {
 func (r *PostRepository) CreatePost(ctx context.Context, title string, content string, image *string, authorID int64, isPrivate bool,) (*models.Post, error) {
 	var post models.Post
 	err := r.db.QueryRow(ctx,
-		`INSERT INTO posts (title, content, image, author_id,is_private)
+		`INSERT INTO posts (title, content, image, author_id, is_private)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, title, content, image, author_id, is_private, created_at`,
-		title,content, image, authorID, isPrivate,).Scan(&post.ID, &post.Title, &post.Content, &post.Image, &post.AuthorID, &post.IsPrivate, &post.CreatedAt,)
+		title, content, image, authorID, isPrivate,).Scan(&post.ID, &post.Title, &post.Content, &post.Image, &post.AuthorID, &post.IsPrivate, &post.CreatedAt,)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (r *PostRepository) GetPostByID(ctx context.Context, id int64,) (*models.Po
 		`SELECT id, title, content, image, author_id, is_private, created_at
 		FROM posts
 		WHERE id = $1`,
-		id,).Scan(&post.ID, &post.Title, &post.Content, &post.Image, &post.AuthorID, &post.IsPrivate,&post.CreatedAt,)
+		id,).Scan(&post.ID, &post.Title, &post.Content, &post.Image, &post.AuthorID, &post.IsPrivate, &post.CreatedAt,)
 	if err != nil {
 		return nil, err
 	}
@@ -61,9 +61,8 @@ func (r *PostRepository) GetPublicPosts(ctx context.Context,) ([]models.Post, er
 		if err != nil {
 			return nil, err
 		}
-		ppost_repository.goosts = append(posts, post)
+		posts = append(posts, post)
 	}
-
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -97,13 +96,12 @@ func (r *PostRepository) GetPostsForUser(ctx context.Context, userID int64,) ([]
 	var posts []models.Post
 	for rows.Next() {
 		var post models.Post
-		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.Image, &post.AuthorID, &post.IsPrivate,&post.CreatedAt,)
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.Image, &post.AuthorID, &post.IsPrivate, &post.CreatedAt,)
 		if err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)
 	}
-
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -114,7 +112,7 @@ func (r *PostRepository) DeletePost(ctx context.Context, postID int64, userID in
 	commandTag, err := r.db.Exec(ctx,
 		`DELETE FROM posts
 		WHERE id = $1 AND author_id = $2`,
-		postID,userID,)
+		postID, userID,)
 	if err != nil {
 		return err
 	}
