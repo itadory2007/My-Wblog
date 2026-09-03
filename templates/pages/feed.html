@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weblog</title>
+</head>
+<body>
+
+    <h1>Weblog</h1>
+
+    <form action="/logout" method="POST">
+        <button type="submit">Logout</button>
+    </form>
+
+    <hr>
+
+    {{range .Posts}}
+        <article>
+            <h2>
+                <a href="/weblog/{{.ID}}">
+                    {{.Title}}
+                </a>
+            </h2>
+
+            <p>{{.Content}}</p>
+
+            {{if .Image}}
+                <img
+                    src="{{.Image}}"
+                    alt="{{.Title}}"
+                    style="max-width: 400px;"
+                >
+            {{end}}
+
+            {{if .IsPrivate}}
+                <p>Private</p>
+            {{else}}
+                <p>Public</p>
+            {{end}}
+        </article>
+
+        <hr>
+    {{else}}
+        <p>No posts found.</p>
+    {{end}}
+
+</body>
+</html>
