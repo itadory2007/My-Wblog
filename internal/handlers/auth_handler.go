@@ -60,3 +60,21 @@ func (h *AuthHandler) Login(c echo.Context) error {
 	c.SetCookie(cookie)
 	return c.Redirect(http.StatusSeeOther, "/")
 }
+
+func (h *AuthHandler) Logout(c echo.Context) error {
+	cookie, err := c.Cookie("session_token")
+	if err == nil {
+		err = h.sessionService.DeleteSession(c.Request().Context(), cookie.Value,)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "failed to logout",)
+		}
+	}
+	clearCookie := new(http.Cookie)
+	clearCookie.Name = "session_token"
+	clearCookie.Value = ""
+	clearCookie.Path = "/"
+	clearCookie.HttpOnly = true
+	clearCookie.MaxAge = -1
+	c.SetCookie(clearCookie)
+	return c.Redirect(http.StatusSeeOther, "/login")
+}
