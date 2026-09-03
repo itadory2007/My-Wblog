@@ -51,6 +51,7 @@ func main() {
 
 	// Create Echo server.
 	e := echo.New()
+	e.Renderer = handlers.NewTemplateRenderer()
 
 	// Public routes.
 	e.GET("/", func(c echo.Context) error {
