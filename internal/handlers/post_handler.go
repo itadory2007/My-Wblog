@@ -34,3 +34,24 @@ func (h *PostHandler) Feed(c echo.Context) error {
 			"Posts": posts,
 		},)
 }
+
+func (h *PostHandler) CreatePost(c echo.Context) error {
+	userIDValue := c.Get(middleware.UserIDKey)
+	userID, ok := userIDValue.(int64)
+	if !ok {
+		return c.String(http.StatusUnauthorized, "unauthorized",)
+	}
+	title := c.FormValue("title")
+	content := c.FormValue("content")
+	image := c.FormValue("image")
+	isPrivate := c.FormValue("is_private") == "true"
+	var imagePtr *string
+	if image != "" {
+		imagePtr = &image
+	}
+	_, err := h.postService.CreatePost(c.Request().Context(), title, content, imagePtr, userID,isPrivate,)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error(),)
+	}
+	return c.Redirect(http.StatusSeeOther, "/",)
+}
