@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"fmt"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -12,6 +13,7 @@ import (
 	"weblog/internal/handlers"
 	"weblog/internal/repositories"
 	"weblog/internal/services"
+	"weblog/internal/middleware"
 )
 
 func main() {
@@ -44,18 +46,28 @@ func main() {
 	// Create handlers.
 	authHandler := handlers.NewAuthHandler(userService, sessionService,)
 
+	// Create authentication middleware.
+	authMiddleware := middleware.NewAuthMiddleware(sessionService,)
+
 	// Create Echo server.
 	e := echo.New()
 
-	// Test route.
+	// Public routes.
 	e.GET("/", func(c echo.Context) error {
 		return c.String(200, "Weblog is running!")
 	})
 
-	// Authentication routes.
 	e.POST("/signup", authHandler.Signup)
 	e.POST("/login", authHandler.Login)
 	e.POST("/logout", authHandler.Logout)
+
+	// Protected test route.
+	e.GET("/profile", func(c echo.Context) error {
+			userID := c.Get(middleware.UserIDKey)
+			return c.String(200, "Authenticated user ID: "+fmt.Sprint(userID),)
+		},
+		authMiddleware.RequireAuth,
+	)
 
 	// Start server.
 	log.Println("Server started on http://localhost:8080")
