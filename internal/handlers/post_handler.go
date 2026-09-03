@@ -55,3 +55,7 @@ func (h *PostHandler) CreatePost(c echo.Context) error {
 	}
 	return c.Redirect(http.StatusSeeOther, "/",)
 }
+
+func (h *PostHandler) ShowCreatePost(c echo.Context) error {
+	return c.Render(http.StatusOK, "create_post.html", nil,)
+}
