@@ -5,10 +5,13 @@ import (
 	"log"
 	"os"
 
-	"weblog/internal/database"
-
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+
+	"weblog/internal/database"
+	"weblog/internal/handlers"
+	"weblog/internal/repositories"
+	"weblog/internal/services"
 )
 
 func main() {
@@ -30,6 +33,17 @@ func main() {
 	}
 	defer conn.Close(context.Background())
 
+	// Create repositories.
+	userRepository := repository.NewUserRepository(conn)
+	sessionRepository := repository.NewSessionRepository(conn)
+
+	// Create services.
+	userService := service.NewUserService(userRepository)
+	sessionService := service.NewSessionService(sessionRepository)
+
+	// Create handlers.
+	authHandler := handlers.NewAuthHandler(userService, sessionService,)
+
 	// Create Echo server.
 	e := echo.New()
 
@@ -38,9 +52,13 @@ func main() {
 		return c.String(200, "Weblog is running!")
 	})
 
+	// Authentication routes.
+	e.POST("/signup", authHandler.Signup)
+	e.POST("/login", authHandler.Login)
+	e.POST("/logout", authHandler.Logout)
+
 	// Start server.
 	log.Println("Server started on http://localhost:8080")
-
 	if err := e.Start(":8080"); err != nil {
 		log.Fatal(err)
 	}

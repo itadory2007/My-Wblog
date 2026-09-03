@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"weblog/internal/service"
+	"weblog/internal/services"
 )
 
 type AuthHandler struct {
