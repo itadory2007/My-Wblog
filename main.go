@@ -58,7 +58,9 @@ func main() {
 	})
 
 	e.POST("/signup", authHandler.Signup)
+	e.GET("/signup", authHandler.ShowSignup)
 	e.POST("/login", authHandler.Login)
+	e.GET("/login", authHandler.ShowLogin)
 	e.POST("/logout", authHandler.Logout)
 
 	// Protected test route.
