@@ -38,13 +38,16 @@ func main() {
 	// Create repositories.
 	userRepository := repository.NewUserRepository(conn)
 	sessionRepository := repository.NewSessionRepository(conn)
+	postRepository := repository.NewPostRepository(conn)
 
 	// Create services.
 	userService := service.NewUserService(userRepository)
 	sessionService := service.NewSessionService(sessionRepository)
+	postService := service.NewPostService(postRepository,)
 
 	// Create handlers.
 	authHandler := handlers.NewAuthHandler(userService, sessionService,)
+	postHandler := handlers.NewPostHandler(postService,)
 
 	// Create authentication middleware.
 	authMiddleware := middleware.NewAuthMiddleware(sessionService,)
@@ -54,10 +57,8 @@ func main() {
 	e.Renderer = handlers.NewTemplateRenderer()
 
 	// Public routes.
-	e.GET("/", func(c echo.Context) error {
-		return c.String(200, "Weblog is running!")
-	})
-
+	e.GET("/", postHandler.Feed, authMiddleware.RequireAuth,)
+	
 	e.POST("/signup", authHandler.Signup)
 	e.GET("/signup", authHandler.ShowSignup)
 	e.POST("/login", authHandler.Login)
