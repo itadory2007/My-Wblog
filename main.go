@@ -6,9 +6,6 @@ import (
 	"os"
 
 	"weblog/internal/database"
-	"weblog/internal/models"
-	"weblog/internal/repositories"
-	"weblog/internal/services"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
