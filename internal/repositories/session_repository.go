@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"weblog/internal/models"
@@ -17,7 +18,7 @@ func NewSessionRepository(db *pgx.Conn) *SessionRepository {
 	}
 }
 
-func (r *SessionRepository) CreateSession(ctx context.Context, token string, userID int64, eexpiresAt time.Time,) error {
+func (r *SessionRepository) CreateSession(ctx context.Context, token string, userID int64, expiresAt time.Time,) error {
 	_, err := r.db.Exec(ctx,
 		`INSERT INTO sessions (token, user_id, expires_at)
 		VALUES ($1, $2, $3)`,

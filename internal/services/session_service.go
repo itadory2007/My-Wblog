@@ -14,9 +14,7 @@ type SessionService struct {
 	sessionRepository *repository.SessionRepository
 }
 
-func NewSessionService(
-	sessionRepository *repository.SessionRepository,
-) *SessionService {
+func NewSessionService(sessionRepository *repository.SessionRepository,) *SessionService {
 	return &SessionService{
 		sessionRepository: sessionRepository,
 	}
@@ -28,7 +26,6 @@ func (s *SessionService) CreateSession(ctx context.Context, userID int64,) (stri
 	if err != nil {
 		return "", err
 	}
-xpiresAt interface{}
 	token := hex.EncodeToString(randomBytes)
 	expiresAt := time.Now().Add(24 * time.Hour)
 	err = s.sessionRepository.CreateSession(ctx, token, userID, expiresAt,)
