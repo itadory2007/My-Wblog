@@ -17,7 +17,7 @@ func NewSessionRepository(db *pgx.Conn) *SessionRepository {
 	}
 }
 
-func (r *SessionRepository) CreateSession(ctx context.Context, token string, userID int64, expiresAt interface{},) error {
+func (r *SessionRepository) CreateSession(ctx context.Context, token string, userID int64, eexpiresAt time.Time,) error {
 	_, err := r.db.Exec(ctx,
 		`INSERT INTO sessions (token, user_id, expires_at)
 		VALUES ($1, $2, $3)`,
