@@ -13,7 +13,7 @@ type TemplateRenderer struct {
 
 func NewTemplateRenderer() *TemplateRenderer {
 	return &TemplateRenderer{
-		templates: template.Must(template.ParseGlob("templates/*.html"),),
+		templates: template.Must(template.ParseGlob("templates/pages/*.html"),),
 	}
 }
 

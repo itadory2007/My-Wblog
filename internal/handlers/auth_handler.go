@@ -12,6 +12,14 @@ type AuthHandler struct {
 	sessionService *service.SessionService
 }
 
+func (h *AuthHandler) ShowLogin(c echo.Context) error {
+	return c.Render(http.StatusOK, "login.html", nil)
+}
+
+func (h *AuthHandler) ShowSignup(c echo.Context) error {
+	return c.Render(http.StatusOK, "signup.html", nil)
+}
+
 func NewAuthHandler(userService *service.UserService, sessionService *service.SessionService,) *AuthHandler {
 	return &AuthHandler{
 		userService: userService,
