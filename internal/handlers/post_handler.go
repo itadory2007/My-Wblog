@@ -59,3 +59,29 @@ func (h *PostHandler) CreatePost(c echo.Context) error {
 func (h *PostHandler) ShowCreatePost(c echo.Context) error {
 	return c.Render(http.StatusOK, "create_post.html", nil,)
 }
+
+func (h *PostHandler) GetPost(c echo.Context) error {
+	userIDValue := c.Get(middleware.UserIDKey)
+	userID, ok := userIDValue.(int64)
+	if !ok {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
+
+	postID, err := strconv.ParseInt(c.Param("id"), 10, 64,)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "invalid post id")
+	}
+
+	post, err := h.postService.GetPost(c.Request().Context(), postID,)
+	if err != nil {
+		return c.String(http.StatusNotFound, "post not found")
+	}
+
+	if post.IsPrivate && post.AuthorID != userID {
+		return c.String(http.StatusForbidden, "you do not have access to this post",)
+	}
+
+	return c.Render(http.StatusOK, "post_detail.html", map[string]interface{}{
+			"Post": post,
+		},)
+}
