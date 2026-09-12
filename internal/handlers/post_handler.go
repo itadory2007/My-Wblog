@@ -86,3 +86,24 @@ func (h *PostHandler) GetPost(c echo.Context) error {
 			"Post": post,
 		},)
 }
+
+func (h *PostHandler) GrantAccess(c echo.Context) error {
+	userIDValue := c.Get(middleware.UserIDKey)
+
+	ownerID, ok := userIDValue.(int64)
+	if !ok {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
+
+	postID, err := strconv.ParseInt(c.Param("id"), 10, 64,)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "invalid post id")
+	}
+
+	username := c.FormValue("username")
+	err = h.postAccessService.GrantAccess(c.Request().Context(), postID, ownerID, username,)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error(),)
+	}
+	return c.Redirect(http.StatusSeeOther, "/weblog/"+strconv.FormatInt(postID, 10),)
+}
