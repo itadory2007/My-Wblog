@@ -66,6 +66,7 @@ func main() {
 	e.POST("/logout", authHandler.Logout)
 	e.GET("/posts/new", postHandler.ShowCreatePost, authMiddleware.RequireAuth,)
 	e.POST("/posts", postHandler.CreatePost, authMiddleware.RequireAuth,)
+	e.GET("/weblog/:id", postHandler.GetPost,  authMiddleware.RequireAuth,)
 
 	// Protected test route.
 	e.GET("/profile", func(c echo.Context) error {
