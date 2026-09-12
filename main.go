@@ -39,15 +39,17 @@ func main() {
 	userRepository := repository.NewUserRepository(conn)
 	sessionRepository := repository.NewSessionRepository(conn)
 	postRepository := repository.NewPostRepository(conn)
+	postAccessRepository := repository.NewPostAccessRepository(conn)
 
 	// Create services.
 	userService := service.NewUserService(userRepository)
 	sessionService := service.NewSessionService(sessionRepository)
 	postService := service.NewPostService(postRepository,)
+	postAccessService := service.NewPostAccessService(postAccessRepository, userRepository, postRepository,)
 
 	// Create handlers.
 	authHandler := handlers.NewAuthHandler(userService, sessionService,)
-	postHandler := handlers.NewPostHandler(postService,)
+	postHandler := handlers.NewPostHandler(postService, postAccessService,)
 
 	// Create authentication middleware.
 	authMiddleware := middleware.NewAuthMiddleware(sessionService,)
@@ -67,8 +69,7 @@ func main() {
 	e.GET("/posts/new", postHandler.ShowCreatePost, authMiddleware.RequireAuth,)
 	e.POST("/posts", postHandler.CreatePost, authMiddleware.RequireAuth,)
 	e.GET("/weblog/:id", postHandler.GetPost,  authMiddleware.RequireAuth,)
-
-	// Protected test route.
+	e.POST("/weblog/:id/access", postHandler.GrantAccess, authMiddleware.RequireAuth,)
 	e.GET("/profile", func(c echo.Context) error {
 			userID := c.Get(middleware.UserIDKey)
 			return c.String(200, "Authenticated user ID: "+fmt.Sprint(userID),)
