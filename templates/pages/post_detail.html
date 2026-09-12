@@ -35,5 +35,31 @@
         <p>{{.Post.Content}}</p>
     </div>
 
+    {{if .Post.IsPrivate}}
+    <hr>
+
+    <h2>Share this post</h2>
+
+    <form
+            action="/weblog/{{.Post.ID}}/access"
+            method="POST"
+        >
+            <label for="username">
+                Username:
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                required
+            >
+
+            <button type="submit">
+                Share
+            </button>
+        </form>
+    {{end}}
+
 </body>
 </html>
