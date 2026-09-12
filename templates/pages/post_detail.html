@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Post.Title}}</title>
+</head>
+<body>
+
+    <a href="/">← Back to Feed</a>
+
+    <h1>{{.Post.Title}}</h1>
+
+    {{if .Post.IsPrivate}}
+        <p>Private Post</p>
+    {{else}}
+        <p>Public Post</p>
+    {{end}}
+
+    <p>
+        Created at:
+        {{.Post.CreatedAt}}
+    </p>
+
+    {{if .Post.Image}}
+        <img
+            src="{{.Post.Image}}"
+            alt="{{.Post.Title}}"
+            style="max-width: 600px;"
+        >
+    {{end}}
+
+    <hr>
+
+    <div>
+        <p>{{.Post.Content}}</p>
+    </div>
+
+</body>
+</html>

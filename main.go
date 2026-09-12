@@ -73,8 +73,7 @@ func main() {
 			userID := c.Get(middleware.UserIDKey)
 			return c.String(200, "Authenticated user ID: "+fmt.Sprint(userID),)
 		},
-		authMiddleware.RequireAuth,
-	)
+		authMiddleware.RequireAuth,)
 
 	// Start server.
 	log.Println("Server started on http://localhost:8080")
