@@ -40,16 +40,18 @@ func main() {
 	sessionRepository := repository.NewSessionRepository(conn)
 	postRepository := repository.NewPostRepository(conn)
 	postAccessRepository := repository.NewPostAccessRepository(conn)
+	commentRepository := repository.NewCommentRepository(conn)
 
 	// Create services.
 	userService := service.NewUserService(userRepository)
 	sessionService := service.NewSessionService(sessionRepository)
 	postService := service.NewPostService(postRepository,)
 	postAccessService := service.NewPostAccessService(postAccessRepository, userRepository, postRepository,)
+	commentService := service.NewCommentService(commentRepository)
 
 	// Create handlers.
 	authHandler := handlers.NewAuthHandler(userService, sessionService,)
-	postHandler := handlers.NewPostHandler(postService, postAccessService,)
+	postHandler := handlers.NewPostHandler(postService, postAccessService, commentService,)
 
 	// Create authentication middleware.
 	authMiddleware := middleware.NewAuthMiddleware(sessionService,)
@@ -73,8 +75,7 @@ func main() {
 	e.GET("/profile", func(c echo.Context) error {
 			userID := c.Get(middleware.UserIDKey)
 			return c.String(200, "Authenticated user ID: "+fmt.Sprint(userID),)
-		},
-		authMiddleware.RequireAuth,)
+		},authMiddleware.RequireAuth,)
 
 	// Start server.
 	log.Println("Server started on http://localhost:8080")
