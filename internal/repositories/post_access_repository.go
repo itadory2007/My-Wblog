@@ -68,3 +68,18 @@ func (r *PostAccessRepository) GetUsersWithAccess(ctx context.Context, postID in
 	}
 	return users, nil
 }
+
+func (r *PostAccessRepository) HasAccess(ctx context.Context, postID, userID int64) (bool, error) {
+	var exists bool
+	err := r.db.QueryRow(ctx, 
+			`SELECT EXISTS (
+			SELECT 1
+			FROM post_access
+			WHERE post_id = $1 AND user_id = $2)`,
+		 postID, userID).Scan(&exists)
+
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
