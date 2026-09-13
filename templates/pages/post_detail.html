@@ -10,23 +10,18 @@
 
     <h1>{{.Post.Title}}</h1>
 
-    {{if .Post.IsPrivate}}
-        <p>Private Post</p>
-    {{else}}
-        <p>Public Post</p>
-    {{end}}
+    {{if .IsOwner}}
+        {{if .Post.IsPrivate}}
+            <hr>
+            <h2>Share this post</h2>
 
-    <p>
-        Created at:
-        {{.Post.CreatedAt}}
-    </p>
+            <form action="/weblog/{{.Post.ID}}/access" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
 
-    {{if .Post.Image}}
-        <img
-            src="{{.Post.Image}}"
-            alt="{{.Post.Title}}"
-            style="max-width: 600px;"
-        >
+                <button type="submit">Share</button>
+            </form>
+        {{end}}
     {{end}}
 
     <hr>
