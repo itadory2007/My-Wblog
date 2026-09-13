@@ -32,6 +32,22 @@
         <p>{{.Post.Content}}</p>
     </div>
 
+        <hr>
+    <h2>Comments</h2>
+
+    {{range .Comments}}
+        <div>
+            <p>{{.Content}}</p>
+            <small>
+                Author ID: {{.AuthorID}} |
+                {{.CreatedAt}}
+            </small>
+        </div>
+        <hr>
+    {{else}}
+        <p>No comments yet.</p>
+    {{end}}
+
     {{if .IsOwner}}
         {{if .Post.IsPrivate}}
             <hr>
