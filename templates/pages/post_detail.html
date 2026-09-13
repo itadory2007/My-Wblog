@@ -30,21 +30,20 @@
     </div>
         <hr>
     <h2>Comments</h2>
-
     {{range .Comments}}
-        <div>
-            <p>{{.Content}}</p>
-            <small>
-                Author ID: {{.AuthorID}} |
-                {{.CreatedAt}}
-            </small>
-        </div>
-        <hr>
+    <div>
+        <strong>{{.Username}}</strong>
+        <p>{{.Content}}</p>
+        <small>
+            {{.CreatedAt}}
+        </small>
+    </div>
+    <hr>
     {{else}}
         <p>No comments yet.</p>
     {{end}}
-
     <hr>
+    
     <h2>Add Comment</h2>
     <form action="/weblog/{{.Post.ID}}/comments" method="POST">
         <div>
