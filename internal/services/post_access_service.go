@@ -68,3 +68,7 @@ func (s *PostAccessService) GetUsersWithAccess(ctx context.Context, postID int64
 	}
 	return s.postAccessRepository.GetUsersWithAccess(ctx, postID,)
 }
+
+func (s *PostAccessService) HasAccess(ctx context.Context, postID, userID int64) (bool, error) {
+	return s.postAccessRepository.HasAccess(ctx, postID, userID)
+}
