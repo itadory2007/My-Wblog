@@ -79,7 +79,10 @@ func (h *PostHandler) GetPost(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusNotFound, "post not found")
 	}
-
+	comments, err := h.commentService.GetComments(c.Request().Context(),postID,)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "failed to load comments",)
+	}
 	isOwner := post.AuthorID == userID
 	if post.IsPrivate && !isOwner {
 		hasAccess, err := h.postAccessService.HasAccess(c.Request().Context(), postID, userID,)
@@ -94,6 +97,7 @@ func (h *PostHandler) GetPost(c echo.Context) error {
 	return c.Render(http.StatusOK, "post_detail.html", map[string]interface{}{
 			"Post":    post,
 			"IsOwner": isOwner,
+			"Comments": comments,
 		},)
 }
 
