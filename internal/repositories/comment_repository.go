@@ -30,13 +30,19 @@ func (r *CommentRepository) CreateComment(ctx context.Context, postID int64, aut
 	return &comment, nil
 }
 
-func (r *CommentRepository) GetCommentsByPostID(ctx context.Context, postID int64,) ([]models.Comment, error) {
+func (r *CommentRepository) GetCommentsByPostID(ctx context.Context, postID int64) ([]models.Comment, error) {
 	rows, err := r.db.Query(ctx,
-		`SELECT id, post_id, author_id, content, created_at
-		FROM comments
-		WHERE post_id = $1
-		ORDER BY created_at ASC`,
-		postID,)
+		 `SELECT
+			c.id,
+			c.post_id,
+			c.author_id,
+			u.username,
+			c.content,
+			c.created_at
+		FROM comments c
+		INNER JOIN users u ON c.author_id = u.id
+		WHERE c.post_id = $1
+		ORDER BY c.created_at ASC`, postID)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +51,7 @@ func (r *CommentRepository) GetCommentsByPostID(ctx context.Context, postID int6
 	var comments []models.Comment
 	for rows.Next() {
 		var comment models.Comment
-		err := rows.Scan(&comment.ID, &comment.PostID, &comment.AuthorID, &comment.Content, &comment.CreatedAt,)
-		if err != nil {
+		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.AuthorID, &comment.Username, &comment.Content, &comment.CreatedAt,); err != nil {
 			return nil, err
 		}
 		comments = append(comments, comment)
