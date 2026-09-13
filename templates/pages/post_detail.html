@@ -7,9 +7,7 @@
 <body>
 
     <a href="/">← Back to Feed</a>
-
     <h1>{{.Post.Title}}</h1>
-
     {{if .Post.IsPrivate}}
         <p>Private Post</p>
     {{else}}
@@ -27,11 +25,9 @@
     {{end}}
 
     <hr>
-
     <div>
         <p>{{.Post.Content}}</p>
     </div>
-
         <hr>
     <h2>Comments</h2>
 
@@ -47,6 +43,24 @@
     {{else}}
         <p>No comments yet.</p>
     {{end}}
+
+    <hr>
+    <h2>Add Comment</h2>
+    <form action="/weblog/{{.Post.ID}}/comments" method="POST">
+        <div>
+            <textarea
+                name="content"
+                rows="5"
+                cols="60"
+                placeholder="Write your comment..."
+                required
+            ></textarea>
+        </div>
+
+        <br>
+
+        <button type="submit">Add Comment</button>
+    </form>
 
     {{if .IsOwner}}
         {{if .Post.IsPrivate}}
