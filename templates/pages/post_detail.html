@@ -28,6 +28,15 @@
     <div>
         <p>{{.Post.Content}}</p>
     </div>
+
+    {{if .IsOwner}}
+    <hr>
+
+    <form action="/weblog/{{.Post.ID}}/delete" method="POST">
+        <button type="submit">Delete Post</button>
+    </form>
+    {{end}}
+
         <hr>
     <h2>Comments</h2>
     {{range .Comments}}
