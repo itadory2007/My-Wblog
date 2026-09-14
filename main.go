@@ -80,8 +80,12 @@ func main() {
 		},authMiddleware.RequireAuth,)
 
 	// Start server.
-	log.Println("Server started on http://localhost:8080")
-	if err := e.Start(":8080"); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	log.Println("Server started on port " + port)
+	if err := e.Start(":" + port); err != nil {
 		log.Fatal(err)
 	}
 }
