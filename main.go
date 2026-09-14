@@ -73,6 +73,7 @@ func main() {
 	e.GET("/weblog/:id", postHandler.GetPost,  authMiddleware.RequireAuth,)
 	e.POST("/weblog/:id/access", postHandler.GrantAccess, authMiddleware.RequireAuth,)
 	e.POST("/weblog/:id/comments", postHandler.CreateComment, authMiddleware.RequireAuth,)
+	e.POST("/weblog/:id/delete", postHandler.DeletePost, authMiddleware.RequireAuth,)
 	e.GET("/profile", func(c echo.Context) error {
 			userID := c.Get(middleware.UserIDKey)
 			return c.String(200, "Authenticated user ID: "+fmt.Sprint(userID),)
