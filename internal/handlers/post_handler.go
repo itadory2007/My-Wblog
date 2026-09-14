@@ -136,3 +136,20 @@ func (h *PostHandler) CreateComment(c echo.Context) error {
 	}
 	return c.Redirect(http.StatusSeeOther, "/weblog/"+strconv.FormatInt(postID, 10),)
 }
+
+func (h *PostHandler) DeletePost(c echo.Context) error {
+	userIDValue := c.Get(middleware.UserIDKey)
+	userID, ok := userIDValue.(int64)
+	if !ok {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
+	postID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "invalid post id")
+	}
+	err = h.postService.DeletePost(c.Request().Context(), postID, userID,)
+	if err != nil {
+		return c.String(http.StatusForbidden, "you cannot delete this post",)
+	}
+	return c.Redirect(http.StatusSeeOther, "/",)
+}
